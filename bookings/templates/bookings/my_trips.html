@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load heroicons %}
+
+{% block title %}My Trips · WanderBook{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--cloud)]">
+  {% include "core/_navbar.html" with variant="light" %}
+
+  <main class="mx-auto max-w-5xl px-6 py-12 sm:px-10">
+    <p class="text-sm font-semibold uppercase tracking-widest text-[var(--terra)]">Your journeys</p>
+    <h1 class="mt-1 font-display text-4xl font-bold tracking-tight text-[var(--dusk)] sm:text-5xl">My Trips</h1>
+    <p class="mt-3 text-lg text-[var(--dusk)]/65">Upcoming and past adventures.</p>
+
+    <div class="mt-10 space-y-5">
+      {% for booking in bookings %}
+        <article class="overflow-hidden rounded-2xl border border-[var(--slate)] bg-white shadow-sm transition hover:shadow-md">
+          <div class="flex flex-col sm:flex-row">
+            {% if booking.package.destination.cover_image_url %}
+              <img src="{{ booking.package.destination.cover_image_url }}"
+                alt="{{ booking.package.destination.name }}"
+                class="h-40 w-full object-cover sm:h-auto sm:w-44 sm:rounded-none"
+                width="280" height="200" loading="lazy">
+            {% endif %}
+            <div class="flex flex-1 flex-col gap-3 p-6">
+              <div class="flex items-start justify-between gap-4">
+                <div>
+                  <p class="text-xs font-semibold uppercase tracking-widest text-[var(--terra)]">
+                    {{ booking.package.destination.name }}, {{ booking.package.destination.country }}
+                  </p>
+                  <h2 class="mt-1 font-display text-xl font-bold text-[var(--dusk)]">{{ booking.package.name }}</h2>
+                  <div class="mt-2 flex flex-wrap items-center gap-3 text-sm text-[var(--dusk)]/65">
+                    <span>
+                      {% heroicon "calendar-days" "inline h-3.5 w-3.5" %}
+                      {{ booking.travel_date|date:"M j, Y" }}
+                    </span>
+                    <span>{{ booking.num_travelers }} traveler{{ booking.num_travelers|pluralize }}</span>
+                    <span>{{ booking.package.duration_days }}D / {{ booking.package.duration_nights }}N</span>
+                  </div>
+                </div>
+                <span class="shrink-0 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide
+                  {% if booking.status == 'confirmed' %}bg-green-100 text-green-800
+                  {% elif booking.status == 'cancelled' %}bg-red-100 text-red-800
+                  {% else %}bg-amber-100 text-amber-800{% endif %}">
+                  {{ booking.get_status_display }}
+                </span>
+              </div>
+
+              <div class="flex items-center justify-between border-t border-[var(--slate)] pt-4">
+                <div>
+                  <p class="text-xs text-[var(--dusk)]/50">Total paid</p>
+                  <p class="font-display text-lg font-bold text-[var(--dusk)]">₹{{ booking.total_price }}</p>
+                </div>
+                {% if booking.status != 'cancelled' %}
+                  <form method="post" action="{% url 'cancel_booking' booking.id %}">
+                    {% csrf_token %}
+                    <button type="submit"
+                      class="text-sm font-semibold text-red-500 transition hover:text-red-700"
+                      onclick="return confirm('Cancel this booking?')">
+                      Cancel trip
+                    </button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </article>
+      {% empty %}
+        <div class="rounded-2xl border border-dashed border-[var(--slate)] bg-white p-14 text-center">
+          <p class="text-lg font-semibold text-[var(--dusk)]/60">No trips booked yet.</p>
+          <p class="mt-2 text-sm text-[var(--dusk)]/45">Explore destinations and plan your next adventure.</p>
+          <a href="{% url 'destinations' %}"
+            class="mt-6 inline-block rounded-md bg-[var(--sky)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[var(--sky-deep)]">
+            Browse destinations
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </main>
+</div>
+{% endblock %}

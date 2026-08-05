@@ -1,55 +1,161 @@
 {% extends "base.html" %}
 
-{% block title %}Dashboard · Django Tailwind{% endblock %}
+{% block title %}Dashboard · WanderBook{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-[var(--foam)]">
-    <header class="border-b border-[var(--sand-cool)]/70 bg-white/70 backdrop-blur-sm">
-        <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5 sm:px-10">
-            <a href="{% url 'home' %}" class="font-display text-lg font-bold tracking-tight text-[var(--ink)]">
-                Django Tailwind
-            </a>
-            <nav class="flex items-center gap-3 text-sm font-medium">
-                <a href="{% url 'home' %}" class="text-[var(--ink)]/65 transition hover:text-[var(--ink)]">Home</a>
-                <a href="{% url 'logout' %}" class="rounded-md bg-[var(--ink)] px-4 py-2 text-white transition hover:bg-[var(--sea-deep)]">
-                    Logout
-                </a>
-            </nav>
+<div class="min-h-screen bg-[var(--cloud)]">
+  {% include "core/_navbar.html" with variant="light" profile=profile %}
+
+  <main class="mx-auto max-w-6xl px-6 py-10 sm:px-10 sm:py-14" data-gsap-dashboard>
+
+    <!-- Welcome hero card -->
+    <section data-gsap-dash-item class="relative overflow-hidden rounded-2xl bg-[var(--dusk)] px-8 py-10 text-white sm:px-10 sm:py-12">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--sky)]/25 via-transparent to-[var(--terra)]/15"></div>
+      <div class="relative z-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <div class="flex items-start gap-5">
+          {% if profile.avatar %}
+            <img src="{{ profile.avatar.url }}" alt="{{ user.username }}"
+              class="h-20 w-20 rounded-full object-cover ring-4 ring-white/20" width="80" height="80">
+          {% else %}
+            <div class="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--sky)] font-display text-2xl font-bold ring-4 ring-white/20">
+              {{ user.username|slice:":1"|upper }}
+            </div>
+          {% endif %}
+          <div>
+            <p class="text-sm font-semibold tracking-wide text-[var(--slate)]">Your travel hub</p>
+            <h1 class="mt-2 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+              Welcome back, {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}!
+            </h1>
+            <p class="mt-3 max-w-xl text-white/70">
+              Plan your next trip, manage bookings, and explore new destinations.
+            </p>
+          </div>
         </div>
-    </header>
-
-    <main class="mx-auto max-w-5xl px-6 py-14 sm:px-10 sm:py-20">
-        <p class="text-sm font-semibold tracking-wide text-[var(--sea)]">Dashboard</p>
-        <h1 class="mt-3 font-display text-4xl font-bold tracking-tight text-[var(--ink)] sm:text-5xl">
-            Welcome, {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
-        </h1>
-        <p class="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--ink)]/70">
-            You're signed in. Use the shortcuts below to jump into the parts of the stack you need.
-        </p>
-
-        <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <a href="{% url 'profile' %}" class="group border border-[var(--sand-cool)] bg-white p-6 transition hover:border-[var(--sea)]">
-                <p class="font-display text-xl font-semibold text-[var(--ink)] group-hover:text-[var(--sea)]">Edit profile</p>
-                <p class="mt-2 text-sm leading-relaxed text-[var(--ink)]/65">Change your first name, last name, and email.</p>
-            </a>
-
-            <a href="{% url 'home' %}" class="group border border-[var(--sand-cool)] bg-white p-6 transition hover:border-[var(--sea)]">
-                <p class="font-display text-xl font-semibold text-[var(--ink)] group-hover:text-[var(--sea)]">Website</p>
-                <p class="mt-2 text-sm leading-relaxed text-[var(--ink)]/65">View the public landing page.</p>
-            </a>
-
-            <a href="{% url 'swagger-ui' %}" class="group border border-[var(--sand-cool)] bg-white p-6 transition hover:border-[var(--sea)]">
-                <p class="font-display text-xl font-semibold text-[var(--ink)] group-hover:text-[var(--sea)]">API docs</p>
-                <p class="mt-2 text-sm leading-relaxed text-[var(--ink)]/65">Explore JWT auth endpoints in Swagger.</p>
-            </a>
-
-            {% if user.is_staff %}
-                <a href="/admin/auth/user/" class="group border border-[var(--sand-cool)] bg-white p-6 transition hover:border-[var(--sea)]">
-                    <p class="font-display text-xl font-semibold text-[var(--ink)] group-hover:text-[var(--sea)]">Admin users</p>
-                    <p class="mt-2 text-sm leading-relaxed text-[var(--ink)]/65">Open users list — click a username to edit.</p>
-                </a>
-            {% endif %}
+        <div class="flex flex-wrap gap-3">
+          <a href="{% url 'destinations' %}" class="inline-flex items-center gap-2 rounded-md bg-[var(--sky)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--sky-deep)]">
+            ✈ Explore destinations
+          </a>
+          <a href="{% url 'my_trips' %}" class="inline-flex items-center gap-2 rounded-md border border-white/30 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white/10">
+            My trips
+          </a>
         </div>
-    </main>
+      </div>
+    </section>
+
+    <!-- Stats row -->
+    <section data-gsap-dash-item class="mt-8 grid gap-4 sm:grid-cols-3">
+      <div class="rounded-xl border border-[var(--slate)] bg-white p-6">
+        <p class="text-sm font-medium text-[var(--dusk)]/55">Upcoming trips</p>
+        <p class="mt-2 font-display text-4xl font-bold text-[var(--dusk)]">{{ stats.upcoming }}</p>
+        <p class="mt-1 text-sm text-[var(--dusk)]/55">Confirmed & pending</p>
+      </div>
+      <div class="rounded-xl border border-[var(--slate)] bg-white p-6">
+        <p class="text-sm font-medium text-[var(--dusk)]/55">Total bookings</p>
+        <p class="mt-2 font-display text-4xl font-bold text-[var(--dusk)]">{{ stats.total }}</p>
+        <p class="mt-1 text-sm text-[var(--dusk)]/55">All time</p>
+      </div>
+      <div class="rounded-xl border border-[var(--slate)] bg-white p-6">
+        <p class="text-sm font-medium text-[var(--dusk)]/55">Destinations</p>
+        <p class="mt-2 font-display text-4xl font-bold text-[var(--dusk)]">{{ stats.destinations }}</p>
+        <p class="mt-1 text-sm text-[var(--dusk)]/55">Available to explore</p>
+      </div>
+    </section>
+
+    <!-- Main content grid -->
+    <div data-gsap-dash-item class="mt-8 grid gap-8 lg:grid-cols-5">
+
+      <!-- Upcoming trips -->
+      <section class="lg:col-span-3">
+        <div class="flex items-center justify-between">
+          <h2 class="font-display text-2xl font-bold text-[var(--dusk)]">Upcoming trips</h2>
+          <a href="{% url 'my_trips' %}" class="text-sm font-semibold text-[var(--sky)] hover:text-[var(--sky-deep)]">View all</a>
+        </div>
+
+        <div class="mt-5 space-y-4">
+          {% for booking in upcoming_bookings %}
+            <article class="flex items-start gap-4 overflow-hidden rounded-xl border border-[var(--slate)] bg-white p-5 transition hover:border-[var(--sky)]">
+              {% if booking.package.destination.cover_image_url %}
+                <img src="{{ booking.package.destination.cover_image_url }}"
+                  alt="{{ booking.package.destination.name }}"
+                  class="h-16 w-16 shrink-0 rounded-lg object-cover" width="64" height="64" loading="lazy">
+              {% else %}
+                <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-[var(--sky)]/15 font-display text-xl font-bold text-[var(--sky)]">
+                  {{ booking.package.destination.name|slice:":1" }}
+                </div>
+              {% endif %}
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold uppercase tracking-widest text-[var(--terra)]">
+                  {{ booking.package.destination.name }}
+                </p>
+                <p class="mt-1 font-display font-bold text-[var(--dusk)] truncate">{{ booking.package.name }}</p>
+                <div class="mt-1.5 flex flex-wrap gap-3 text-xs text-[var(--dusk)]/60">
+                  <span>{{ booking.travel_date|date:"M j, Y" }}</span>
+                  <span>{{ booking.num_travelers }} traveler{{ booking.num_travelers|pluralize }}</span>
+                  <span>₹{{ booking.total_price }}</span>
+                </div>
+              </div>
+              <span class="shrink-0 rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide
+                {% if booking.status == 'confirmed' %}bg-green-100 text-green-800
+                {% else %}bg-amber-100 text-amber-800{% endif %}">
+                {{ booking.get_status_display }}
+              </span>
+            </article>
+          {% empty %}
+            <div class="rounded-xl border border-dashed border-[var(--slate)] bg-white p-10 text-center">
+              <p class="text-[var(--dusk)]/60">No upcoming trips yet.</p>
+              <a href="{% url 'destinations' %}"
+                class="mt-4 inline-block text-sm font-semibold text-[var(--sky)] hover:text-[var(--sky-deep)]">
+                Explore destinations →
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Quick actions -->
+      <section class="lg:col-span-2">
+        <h2 class="font-display text-2xl font-bold text-[var(--dusk)]">Quick actions</h2>
+        <div class="mt-5 grid gap-3">
+          <a href="{% url 'destinations' %}" class="group flex items-center justify-between rounded-xl border border-[var(--slate)] bg-white p-4 transition hover:border-[var(--sky)] hover:shadow-sm">
+            <div>
+              <p class="font-semibold text-[var(--dusk)] group-hover:text-[var(--sky)]">Explore destinations</p>
+              <p class="text-sm text-[var(--dusk)]/55">Find your next adventure</p>
+            </div>
+            <span class="text-[var(--sky)]">→</span>
+          </a>
+          <a href="{% url 'my_trips' %}" class="group flex items-center justify-between rounded-xl border border-[var(--slate)] bg-white p-4 transition hover:border-[var(--sky)] hover:shadow-sm">
+            <div>
+              <p class="font-semibold text-[var(--dusk)] group-hover:text-[var(--sky)]">My trips</p>
+              <p class="text-sm text-[var(--dusk)]/55">View & manage bookings</p>
+            </div>
+            <span class="text-[var(--sky)]">→</span>
+          </a>
+          <a href="{% url 'profile' %}" class="group flex items-center justify-between rounded-xl border border-[var(--slate)] bg-white p-4 transition hover:border-[var(--sky)] hover:shadow-sm">
+            <div>
+              <p class="font-semibold text-[var(--dusk)] group-hover:text-[var(--sky)]">Edit profile</p>
+              <p class="text-sm text-[var(--dusk)]/55">Name, photo & email</p>
+            </div>
+            <span class="text-[var(--sky)]">→</span>
+          </a>
+          <a href="{% url 'swagger-ui' %}" class="group flex items-center justify-between rounded-xl border border-[var(--slate)] bg-white p-4 transition hover:border-[var(--sky)] hover:shadow-sm">
+            <div>
+              <p class="font-semibold text-[var(--dusk)] group-hover:text-[var(--sky)]">API docs</p>
+              <p class="text-sm text-[var(--dusk)]/55">Swagger UI</p>
+            </div>
+            <span class="text-[var(--sky)]">→</span>
+          </a>
+          {% if user.is_staff %}
+            <a href="/admin/" class="group flex items-center justify-between rounded-xl border border-[var(--slate)] bg-white p-4 transition hover:border-[var(--sky)] hover:shadow-sm">
+              <div>
+                <p class="font-semibold text-[var(--dusk)] group-hover:text-[var(--sky)]">Admin panel</p>
+                <p class="text-sm text-[var(--dusk)]/55">Manage data</p>
+              </div>
+              <span class="text-[var(--sky)]">→</span>
+            </a>
+          {% endif %}
+        </div>
+      </section>
+    </div>
+  </main>
 </div>
 {% endblock %}

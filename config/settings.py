@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "tailwind",
     "django_browser_reload",
-    "core",
+    "core.apps.CoreConfig",
+    "bookings",
     "theme",
     "api",
 ]
@@ -136,6 +137,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -163,27 +166,27 @@ SIMPLE_JWT = {
 }
 
 UNFOLD = {
-    "SITE_TITLE": "Django Tailwind",
-    "SITE_HEADER": "Django Tailwind",
-    "SITE_SUBHEADER": "Admin",
+    "SITE_TITLE": "WanderBook",
+    "SITE_HEADER": "WanderBook",
+    "SITE_SUBHEADER": "Travel Admin",
     "SITE_URL": "/",
-    "SITE_SYMBOL": "bolt",
+    "SITE_SYMBOL": "flight",
     "SHOW_HISTORY": True,
     "SHOW_VIEW_ON_SITE": True,
     "BORDER_RADIUS": "8px",
     "COLORS": {
         "primary": {
-            "50": "#eef8f4",
-            "100": "#d5efe5",
-            "200": "#aedfcb",
-            "300": "#7ac7ac",
-            "400": "#47a989",
-            "500": "#1f6f5b",
-            "600": "#145244",
-            "700": "#124338",
-            "800": "#10362e",
-            "900": "#0e2d27",
-            "950": "#061916",
+            "50": "#eff6ff",
+            "100": "#dbeafe",
+            "200": "#bfdbfe",
+            "300": "#93c5fd",
+            "400": "#60a5fa",
+            "500": "#1d6fd8",
+            "600": "#1554a8",
+            "700": "#1e40af",
+            "800": "#1e3a8a",
+            "900": "#172554",
+            "950": "#0f1c2e",
         },
     },
     "SIDEBAR": {
@@ -212,6 +215,28 @@ UNFOLD = {
                 ],
             },
             {
+                "title": _("Travel"),
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {
+                        "title": _("Destinations"),
+                        "icon": "location_on",
+                        "link": reverse_lazy("admin:bookings_destination_changelist"),
+                    },
+                    {
+                        "title": _("Tour packages"),
+                        "icon": "card_travel",
+                        "link": reverse_lazy("admin:bookings_tourpackage_changelist"),
+                    },
+                    {
+                        "title": _("Bookings"),
+                        "icon": "event_note",
+                        "link": reverse_lazy("admin:bookings_booking_changelist"),
+                    },
+                ],
+            },
+            {
                 "title": _("Site"),
                 "separator": True,
                 "items": [
@@ -221,9 +246,19 @@ UNFOLD = {
                         "link": reverse_lazy("home"),
                     },
                     {
-                        "title": _("Dashboard"),
+                        "title": _("App dashboard"),
                         "icon": "space_dashboard",
                         "link": reverse_lazy("dashboard"),
+                    },
+                    {
+                        "title": _("Destinations"),
+                        "icon": "explore",
+                        "link": reverse_lazy("destinations"),
+                    },
+                    {
+                        "title": _("My Trips"),
+                        "icon": "luggage",
+                        "link": reverse_lazy("my_trips"),
                     },
                     {
                         "title": _("Login page"),

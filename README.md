@@ -51,6 +51,8 @@ python manage.py createsuperuser
 - Web login: [http://127.0.0.1:8000/login/](http://127.0.0.1:8000/login/)
 - Web signup: [http://127.0.0.1:8000/signup/](http://127.0.0.1:8000/signup/)
 - Dashboard (after login): [http://127.0.0.1:8000/dashboard/](http://127.0.0.1:8000/dashboard/)
+- Bookings: [http://127.0.0.1:8000/bookings/](http://127.0.0.1:8000/bookings/)
+- My bookings: [http://127.0.0.1:8000/bookings/mine/](http://127.0.0.1:8000/bookings/mine/)
 - Admin: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/) (styled with [Unfold](https://unfoldadmin.com/))
 - Logout: `/logout/`
 
@@ -103,6 +105,19 @@ curl -X POST http://127.0.0.1:8000/api/auth/refresh/ \
   -H "Content-Type: application/json" \
   -d '{"refresh":"<refresh_token>"}'
 ```
+
+## Booking system
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/bookings/` | No | Browse services |
+| `POST` | `/bookings/new/` | Login | Create booking (web form) |
+| `GET` | `/bookings/mine/` | Login | Your bookings |
+| `GET` | `/api/bookings/services/` | No | List services (API) |
+| `GET`/`POST` | `/api/bookings/` | Bearer | List/create bookings |
+| `GET`/`DELETE` | `/api/bookings/<id>/` | Bearer | View/cancel booking |
+
+Manage services and bookings in admin: **Bookings → Services / Bookings**.
 
 ## Production
 

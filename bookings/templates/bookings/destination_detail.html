@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% load heroicons %}
+
+{% block title %}{{ destination.name }} — WanderBook{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--cloud)]">
+  {% include "core/_navbar.html" with variant="light" %}
+
+  <!-- Hero -->
+  <div class="relative h-80 overflow-hidden sm:h-96 lg:h-[28rem]">
+    {% if destination.cover_image_url %}
+      <img src="{{ destination.cover_image_url }}" alt="{{ destination.name }}"
+        class="section-image h-full w-full object-cover" width="2400" height="900" fetchpriority="high">
+    {% else %}
+      <div class="h-full w-full bg-gradient-to-br from-[var(--sky)] to-[var(--dusk)]"></div>
+    {% endif %}
+    <div class="absolute inset-0 bg-gradient-to-t from-[var(--dusk)]/80 via-[var(--dusk)]/35 to-transparent"></div>
+
+    <!-- Back link on hero -->
+    <div class="absolute left-0 top-0 px-6 py-5 sm:px-10">
+      <a href="{% url 'destinations' %}" class="flex items-center gap-2 rounded-md bg-black/30 px-3 py-2 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-black/50">
+        ← All destinations
+      </a>
+    </div>
+
+    <!-- Destination title -->
+    <div class="absolute bottom-0 left-0 px-6 py-8 sm:px-10">
+      <p class="text-sm font-semibold uppercase tracking-widest text-white/70">{{ destination.country }}</p>
+      <h1 class="mt-1 font-display text-4xl font-bold text-white sm:text-5xl">{{ destination.name }}</h1>
+      {% if destination.tagline %}
+        <p class="mt-2 text-white/80">{{ destination.tagline }}</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <main class="mx-auto max-w-6xl px-6 py-12 sm:px-10">
+    <div class="grid gap-12 lg:grid-cols-3">
+      <!-- Description -->
+      <section class="lg:col-span-2">
+        {% if destination.description %}
+          <h2 class="font-display text-2xl font-bold text-[var(--dusk)]">About {{ destination.name }}</h2>
+          <p class="mt-4 text-lg leading-relaxed text-[var(--dusk)]/70">{{ destination.description }}</p>
+        {% endif %}
+
+        <!-- Packages -->
+        <h2 class="mt-12 font-display text-2xl font-bold text-[var(--dusk)]">
+          Available packages
+          <span class="ml-2 rounded-full bg-[var(--slate)] px-2.5 py-0.5 text-sm font-semibold text-[var(--dusk)]">{{ packages.count }}</span>
+        </h2>
+
+        <div class="mt-6 space-y-5">
+          {% for pkg in packages %}
+            <article class="overflow-hidden rounded-2xl border border-[var(--slate)] bg-white shadow-sm transition hover:shadow-md">
+              <div class="flex flex-col gap-4 p-6 sm:flex-row sm:items-start sm:justify-between">
+                <div class="flex-1">
+                  <p class="text-xs font-semibold uppercase tracking-widest text-[var(--terra)]">
+                    {{ pkg.duration_days }} Days · {{ pkg.duration_nights }} Nights
+                  </p>
+                  <h3 class="mt-1.5 font-display text-xl font-bold text-[var(--dusk)]">{{ pkg.name }}</h3>
+                  {% if pkg.highlights %}
+                    <ul class="mt-4 space-y-1.5">
+                      {% for hl in pkg.highlights_list %}
+                        <li class="flex items-start gap-2 text-sm text-[var(--dusk)]/70">
+                          {% heroicon "check" "mt-0.5 h-4 w-4 shrink-0 text-[var(--sky)]" %}
+                          {{ hl }}
+                        </li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+                <div class="flex shrink-0 flex-col items-end gap-3">
+                  <div class="text-right">
+                    <p class="text-xs text-[var(--dusk)]/55">Starting from</p>
+                    <p class="font-display text-2xl font-bold text-[var(--dusk)]">₹{{ pkg.price_per_person }}</p>
+                    <p class="text-xs text-[var(--dusk)]/55">per person</p>
+                  </div>
+                  <p class="text-xs text-[var(--dusk)]/50">Max {{ pkg.max_seats }} seats</p>
+                  {% if user.is_authenticated %}
+                    <a href="{% url 'book_package' pkg.id %}"
+                      class="rounded-md bg-[var(--sky)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--sky-deep)]">
+                      Book now
+                    </a>
+                  {% else %}
+                    <a href="{% url 'login' %}?next={% url 'book_package' pkg.id %}"
+                      class="rounded-md border border-[var(--sky)] px-5 py-2.5 text-sm font-semibold text-[var(--sky)] transition hover:bg-[var(--sky)] hover:text-white">
+                      Login to book
+                    </a>
+                  {% endif %}
+                </div>
+              </div>
+            </article>
+          {% empty %}
+            <div class="rounded-xl border border-dashed border-[var(--slate)] bg-white p-10 text-center">
+              <p class="text-[var(--dusk)]/55">No packages available yet.</p>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <!-- Sidebar -->
+      <aside>
+        <div class="rounded-2xl border border-[var(--slate)] bg-white p-6 shadow-sm">
+          <h3 class="font-display text-lg font-bold text-[var(--dusk)]">Quick info</h3>
+          <dl class="mt-5 space-y-4 text-sm">
+            <div>
+              <dt class="text-[var(--dusk)]/55">Country</dt>
+              <dd class="mt-0.5 font-semibold text-[var(--dusk)]">{{ destination.country }}</dd>
+            </div>
+            <div>
+              <dt class="text-[var(--dusk)]/55">Packages available</dt>
+              <dd class="mt-0.5 font-semibold text-[var(--dusk)]">{{ packages.count }}</dd>
+            </div>
+            {% if packages %}
+            <div>
+              <dt class="text-[var(--dusk)]/55">Prices from</dt>
+              <dd class="mt-0.5 font-display text-xl font-bold text-[var(--terra)]">
+                ₹{{ packages.first.price_per_person }}<span class="text-sm font-normal text-[var(--dusk)]/55"> / person</span>
+              </dd>
+            </div>
+            {% endif %}
+          </dl>
+          {% if not user.is_authenticated %}
+            <div class="mt-6 border-t border-[var(--slate)] pt-6">
+              <p class="text-sm text-[var(--dusk)]/65">Create a free account to start booking.</p>
+              <a href="{% url 'signup' %}" class="mt-3 block rounded-md bg-[var(--terra)] px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-orange-700">
+                Sign up free
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+{% endblock %}

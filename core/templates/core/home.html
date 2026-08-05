@@ -1,202 +1,206 @@
 {% extends "base.html" %}
+{% load heroicons %}
 
-{% block title %}Django Tailwind{% endblock %}
+{% block title %}WanderBook — Discover India{% endblock %}
 
 {% block content %}
+{% include "core/_navbar.html" with variant="hero" %}
+
+<!-- ── HERO ────────────────────────────────────────────────── -->
 <section class="relative min-h-screen overflow-hidden">
-    {# Full-bleed visual plane #}
-    <div class="absolute inset-0">
-        <img
-            class="hero-image h-full w-full object-cover object-center"
-            src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2400&q=80"
-            alt="Misty mountain lake at dawn"
-            width="2400"
-            height="1600"
-            fetchpriority="high"
+  <div class="absolute inset-0">
+    <img data-gsap-hero-image class="h-full w-full object-cover object-center"
+      src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2400&q=80"
+      alt="Stunning mountain landscape at golden hour" width="2400" height="1600" fetchpriority="high">
+    <div class="absolute inset-0 bg-gradient-to-t from-[var(--dusk)]/90 via-[var(--dusk)]/50 to-[var(--dusk)]/20"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-[var(--dusk)]/60 via-transparent to-transparent"></div>
+  </div>
+
+  <div class="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-end px-6 pb-20 pt-32 sm:px-10 sm:pb-24 lg:pb-28">
+    <div class="max-w-3xl" data-gsap-hero>
+      <p data-gsap-hero-item class="inline-block rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-white/90 backdrop-blur-sm">
+        India's favourite travel companion
+      </p>
+      <h1 data-gsap-hero-item class="mt-6 font-display text-5xl font-extrabold leading-tight tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl">
+        Explore.<br>Experience.<br>Remember.
+      </h1>
+      <div data-gsap-hero-line class="mt-6 h-px w-24 bg-[var(--terra-light)] sm:w-36"></div>
+      <p data-gsap-hero-item class="mt-7 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
+        Hand-crafted tour packages to India's most breathtaking destinations — mountains, beaches, backwaters, deserts and beyond.
+      </p>
+
+      <!-- Search bar -->
+      <form method="get" action="{% url 'destinations' %}" data-gsap-hero-item class="mt-9 flex max-w-xl overflow-hidden rounded-xl bg-white/15 backdrop-blur-md ring-1 ring-white/25 transition focus-within:ring-white/60">
+        <input
+          name="q"
+          type="search"
+          placeholder="Search destinations — Goa, Manali, Kerala…"
+          class="flex-1 bg-transparent px-5 py-4 text-sm text-white placeholder-white/55 outline-none"
+          autocomplete="off"
         >
-        <div class="absolute inset-0 bg-gradient-to-t from-[var(--ink)]/88 via-[var(--ink)]/45 to-[var(--ink)]/20"></div>
-        <div class="absolute inset-0 bg-gradient-to-r from-[var(--ink)]/55 via-transparent to-transparent"></div>
+        <button type="submit" class="shrink-0 bg-[var(--terra)] px-6 py-4 text-sm font-semibold text-white transition hover:bg-orange-700">
+          Search
+        </button>
+      </form>
+
+      <div data-gsap-hero-item class="mt-6 flex flex-wrap gap-3">
+        <a href="{% url 'destinations' %}" class="inline-flex items-center gap-2 rounded-md bg-[var(--sky)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--sky-deep)]">
+          Browse all destinations
+        </a>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'signup' %}" class="inline-flex items-center gap-2 rounded-md border border-white/30 bg-white/10 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-white/20">
+          Create free account
+        </a>
+        {% endif %}
+      </div>
     </div>
-
-    <div class="relative z-10 mx-auto flex min-h-screen w-full max-w-6xl flex-col justify-end px-6 pb-16 pt-28 sm:px-10 sm:pb-20 lg:pb-24">
-        <div class="max-w-3xl">
-            <p class="hero-rise hero-rise-delay-1 font-display text-5xl font-extrabold tracking-tight text-white sm:text-6xl md:text-7xl lg:text-8xl">
-                Django Tailwind
-            </p>
-
-            <div class="hero-accent-line mt-6 h-px w-24 bg-(--sand-cool) sm:w-32"></div>
-
-            <h1 class="hero-rise hero-rise-delay-2 mt-7 font-display text-2xl font-semibold leading-snug tracking-tight text-(--mist) sm:text-3xl md:text-4xl">
-                Beautiful interfaces, built the Django way.
-            </h1>
-
-            <p class="hero-rise hero-rise-delay-3 mt-5 max-w-xl text-base leading-relaxed text-white/75 sm:text-lg">
-                A ready-to-ship stack where utility-first styling meets a solid Python backend—fast to start, clear to extend.
-            </p>
-
-            <div class="hero-rise hero-rise-delay-4 mt-9 flex flex-wrap items-center gap-4">
-                <a
-                    href="#get-started"
-                    class="inline-flex items-center justify-center rounded-md bg-(--sea) px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-(--sea-deep) hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-white"
-                >
-                    Get started
-                </a>
-                {% if user.is_authenticated %}
-                    <a
-                        href="{% url 'dashboard' %}"
-                        class="inline-flex items-center justify-center rounded-md border border-white/35 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition duration-300 hover:border-white/70 hover:bg-white/10"
-                    >
-                        Dashboard
-                    </a>
-                    <a
-                        href="{% url 'logout' %}"
-                        class="inline-flex items-center justify-center rounded-md border border-white/35 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition duration-300 hover:border-white/70 hover:bg-white/10"
-                    >
-                        Logout
-                    </a>
-                {% else %}
-                    <a
-                        href="{% url 'login' %}"
-                        class="inline-flex items-center justify-center rounded-md border border-white/35 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition duration-300 hover:border-white/70 hover:bg-white/10"
-                    >
-                        Login
-                    </a>
-                    <a
-                        href="{% url 'signup' %}"
-                        class="inline-flex items-center justify-center rounded-md border border-white/35 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur-sm transition duration-300 hover:border-white/70 hover:bg-white/10"
-                    >
-                        Sign up
-                    </a>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+  </div>
 </section>
 
-<section id="get-started" class="relative overflow-hidden bg-(--foam)">
-    <div class="grid min-h-[85vh] lg:grid-cols-2">
-        <div class="relative min-h-[42vh] lg:min-h-full">
-            <img
-                class="section-image absolute inset-0 h-full w-full object-cover object-center"
-                src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1800&q=80"
-                alt="Bright studio workspace with long windows"
-                width="1800"
-                height="1200"
-                loading="lazy"
-            >
-            <div class="absolute inset-0 bg-linear-to-t from-(--ink)/35 via-transparent to-transparent lg:bg-linear-to-r lg:from-transparent lg:via-transparent lg:to-(--foam)/40"></div>
-        </div>
-
-        <div class="flex items-center px-6 py-16 sm:px-10 sm:py-20 lg:px-16 xl:px-20">
-            <div class="mx-auto w-full max-w-lg">
-                <h2 class="font-display text-3xl font-bold tracking-tight text-[var(--ink)] sm:text-4xl md:text-5xl">
-                    From template to interface
-                </h2>
-                <p class="mt-5 text-lg leading-relaxed text-[var(--ink)]/70">
-                    One process keeps your styles and server in sync—edit a class, see it land.
-                </p>
-
-                <ol class="mt-12 space-y-8 border-l border-[var(--sand-cool)] pl-6">
-                    <li>
-                        <p class="font-display text-sm font-semibold tracking-wide text-[var(--sea)]">01</p>
-                        <p class="mt-1 font-display text-xl font-semibold text-[var(--ink)]">Start the stack</p>
-                        <p class="mt-2 text-[var(--ink)]/65">Launch Django and the Tailwind watcher together with a single command.</p>
-                    </li>
-                    <li>
-                        <p class="font-display text-sm font-semibold tracking-wide text-[var(--sea)]">02</p>
-                        <p class="mt-1 font-display text-xl font-semibold text-[var(--ink)]">Style in templates</p>
-                        <p class="mt-2 text-[var(--ink)]/65">Drop utility classes into HTML—no separate CSS files for every tweak.</p>
-                    </li>
-                    <li>
-                        <p class="font-display text-sm font-semibold tracking-wide text-[var(--sea)]">03</p>
-                        <p class="mt-1 font-display text-xl font-semibold text-[var(--ink)]">Ship the build</p>
-                        <p class="mt-2 text-[var(--ink)]/65">Compile production CSS when you’re ready to deploy.</p>
-                    </li>
-                </ol>
-
-                <div class="mt-12">
-                    <p class="text-sm font-medium text-[var(--ink)]/55">Run this in your project root</p>
-                    <pre class="mt-3 overflow-x-auto bg-[var(--ink)] px-5 py-4 text-sm leading-relaxed text-[var(--mist)]"><code>python manage.py tailwind dev</code></pre>
-                </div>
-            </div>
-        </div>
+<!-- ── FEATURED DESTINATIONS ──────────────────────────────── -->
+{% if featured_destinations %}
+<section class="bg-[var(--cloud)] py-20 sm:py-24">
+  <div class="mx-auto max-w-6xl px-6 sm:px-10">
+    <div class="flex items-end justify-between gsap-reveal">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-widest text-[var(--terra)]">Handpicked for you</p>
+        <h2 class="mt-2 font-display text-3xl font-bold tracking-tight text-[var(--dusk)] sm:text-4xl">
+          Featured destinations
+        </h2>
+      </div>
+      <a href="{% url 'destinations' %}" class="hidden text-sm font-semibold text-[var(--sky)] hover:text-[var(--sky-deep)] sm:block">
+        View all →
+      </a>
     </div>
+
+    <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-gsap-stagger>
+      {% for dest in featured_destinations %}
+      <a href="{% url 'destination_detail' dest.slug %}" data-gsap-hover class="group relative overflow-hidden rounded-2xl bg-[var(--dusk)] shadow-md transition hover:shadow-xl">
+        {% if dest.cover_image_url %}
+        <img src="{{ dest.cover_image_url }}" alt="{{ dest.name }}"
+          class="h-56 w-full object-cover transition duration-500 group-hover:scale-105" width="600" height="400" loading="lazy">
+        {% else %}
+        <div class="h-56 w-full bg-gradient-to-br from-[var(--sky)] to-[var(--dusk)]"></div>
+        {% endif %}
+        <div class="absolute inset-0 bg-gradient-to-t from-[var(--dusk)]/80 via-transparent to-transparent"></div>
+        <div class="absolute bottom-0 left-0 p-5">
+          <p class="text-xs font-semibold uppercase tracking-widest text-white/70">{{ dest.country }}</p>
+          <p class="mt-1 font-display text-xl font-bold text-white">{{ dest.name }}</p>
+          {% if dest.tagline %}
+          <p class="mt-1 text-sm text-white/75 line-clamp-1">{{ dest.tagline }}</p>
+          {% endif %}
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+
+    <div class="mt-8 sm:hidden">
+      <a href="{% url 'destinations' %}" class="block text-center text-sm font-semibold text-[var(--sky)]">View all destinations →</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ── WHY US ──────────────────────────────────────────────── -->
+<section class="relative overflow-hidden bg-[var(--dusk)] py-20 text-white sm:py-28">
+  <div class="absolute inset-0">
+    <img class="section-image h-full w-full object-cover opacity-20"
+      src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=80"
+      alt="Sunlit forest" width="2400" height="1200" loading="lazy">
+    <div class="absolute inset-0 bg-gradient-to-b from-[var(--dusk)]/70 to-[var(--dusk)]"></div>
+  </div>
+  <div class="relative z-10 mx-auto max-w-6xl px-6 sm:px-10">
+    <div class="text-center gsap-reveal">
+      <p class="text-sm font-semibold uppercase tracking-widest text-[var(--terra-light)]">Why WanderBook?</p>
+      <h2 class="mt-3 font-display text-3xl font-bold sm:text-4xl">Travel without the hassle</h2>
+    </div>
+    <div class="mt-14 grid gap-8 sm:grid-cols-3" data-gsap-stagger>
+      <div class="rounded-xl border border-white/10 bg-white/5 p-7 backdrop-blur-sm">
+        <div class="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--sky)]/20">
+          {% heroicon "check-circle" "h-6 w-6 text-[var(--sky)]" %}
+        </div>
+        <h3 class="mt-4 font-display text-lg font-semibold">Curated packages</h3>
+        <p class="mt-2 text-sm leading-relaxed text-white/65">Every itinerary is hand-picked and tested by our travel experts — no filler, no fluff.</p>
+      </div>
+      <div class="rounded-xl border border-white/10 bg-white/5 p-7 backdrop-blur-sm">
+        <div class="flex h-11 w-11 items-center justify-center rounded-full bg-[var(--terra)]/25">
+          {% heroicon "banknotes" "h-6 w-6 text-[var(--terra-light)]" %}
+        </div>
+        <h3 class="mt-4 font-display text-lg font-semibold">Best price guarantee</h3>
+        <p class="mt-2 text-sm leading-relaxed text-white/65">Transparent pricing with no hidden costs. Book with confidence every time.</p>
+      </div>
+      <div class="rounded-xl border border-white/10 bg-white/5 p-7 backdrop-blur-sm">
+        <div class="flex h-11 w-11 items-center justify-center rounded-full bg-green-500/20">
+          {% heroicon "lifebuoy" "h-6 w-6 text-green-400" %}
+        </div>
+        <h3 class="mt-4 font-display text-lg font-semibold">24/7 support</h3>
+        <p class="mt-2 text-sm leading-relaxed text-white/65">Our travel desk is always on call — before, during and after your trip.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section id="ship" class="relative overflow-hidden bg-[var(--ink)] text-[var(--mist)]">
-    <div class="absolute inset-0">
-        <img
-            class="section-image h-full w-full object-cover object-center opacity-35"
-            src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2400&q=80"
-            alt="Sunlit forest path through tall trees"
-            width="2400"
-            height="1600"
-            loading="lazy"
-        >
-        <div class="absolute inset-0 bg-gradient-to-b from-[var(--ink)]/70 via-[var(--ink)]/85 to-[var(--ink)]"></div>
+<!-- ── POPULAR PACKAGES ────────────────────────────────────── -->
+<section class="bg-white py-20 sm:py-24">
+  <div class="mx-auto max-w-6xl px-6 sm:px-10">
+    <div class="text-center gsap-reveal">
+      <p class="text-sm font-semibold uppercase tracking-widest text-[var(--terra)]">Most booked</p>
+      <h2 class="mt-2 font-display text-3xl font-bold tracking-tight text-[var(--dusk)] sm:text-4xl">
+        Popular packages
+      </h2>
+      <p class="mt-4 text-[var(--dusk)]/65">Pick a ready-made itinerary and hit the road.</p>
     </div>
 
-    <div class="relative z-10 mx-auto flex min-h-[75vh] max-w-6xl flex-col justify-center px-6 py-24 sm:px-10 lg:py-32">
-        <div class="max-w-2xl">
-            <h2 class="font-display text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl">
-                Ready when you are
-            </h2>
-            <p class="mt-5 text-lg leading-relaxed text-white/70">
-                When the interface feels right, compile once and deploy with the same Django workflow you already know.
-            </p>
-        </div>
-
-        <div class="mt-14 max-w-xl">
-            <p class="text-sm font-medium tracking-wide text-[var(--sand-cool)]">Production build</p>
-            <pre class="mt-3 overflow-x-auto border border-white/10 bg-black/30 px-5 py-5 text-sm leading-relaxed text-[var(--mist)] backdrop-blur-sm"><code>python manage.py tailwind build
-python manage.py collectstatic</code></pre>
-        </div>
-
-        <div class="mt-10">
-            <a
-                href="/admin/"
-                class="inline-flex items-center justify-center rounded-md bg-[var(--sea)] px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-[var(--sea-deep)] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-            >
-                Open admin
+    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-gsap-stagger>
+      {% for pkg in popular_packages %}
+      <article data-gsap-hover class="flex flex-col overflow-hidden rounded-2xl border border-[var(--slate)] bg-[var(--cloud)] transition hover:shadow-lg">
+        {% if pkg.destination.cover_image_url %}
+        <img src="{{ pkg.destination.cover_image_url }}" alt="{{ pkg.destination.name }}"
+          class="h-44 w-full object-cover" width="600" height="300" loading="lazy">
+        {% endif %}
+        <div class="flex flex-1 flex-col p-6">
+          <p class="text-xs font-semibold uppercase tracking-widest text-[var(--terra)]">{{ pkg.destination.name }}</p>
+          <h3 class="mt-2 font-display text-lg font-bold text-[var(--dusk)]">{{ pkg.name }}</h3>
+          <p class="mt-2 text-sm text-[var(--dusk)]/60">{{ pkg.duration_days }}D / {{ pkg.duration_nights }}N</p>
+          <div class="mt-auto pt-5 flex items-center justify-between">
+            <div>
+              <p class="text-xs text-[var(--dusk)]/55">Starting from</p>
+              <p class="font-display text-xl font-bold text-[var(--dusk)]">₹{{ pkg.price_per_person }}</p>
+              <p class="text-xs text-[var(--dusk)]/55">per person</p>
+            </div>
+            {% if user.is_authenticated %}
+            <a href="{% url 'book_package' pkg.id %}" class="rounded-md bg-[var(--sky)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[var(--sky-deep)]">
+              Book now
             </a>
+            {% else %}
+            <a href="{% url 'login' %}?next={% url 'book_package' pkg.id %}" class="rounded-md border border-[var(--sky)] px-4 py-2 text-sm font-semibold text-[var(--sky)] transition hover:bg-[var(--sky)] hover:text-white">
+              Login to book
+            </a>
+            {% endif %}
+          </div>
         </div>
+      </article>
+      {% empty %}
+      <p class="col-span-3 text-center text-[var(--dusk)]/55 py-10">No packages available yet — check back soon!</p>
+      {% endfor %}
     </div>
+
+    <div class="mt-10 text-center">
+      <a href="{% url 'destinations' %}" class="inline-flex items-center gap-2 rounded-md bg-[var(--dusk)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[var(--sky-deep)]">
+        Explore all destinations
+      </a>
+    </div>
+  </div>
 </section>
 
-<section id="templates" class="relative overflow-hidden bg-[var(--foam)]">
-    <div class="grid min-h-[80vh] lg:grid-cols-2">
-        <div class="order-2 flex items-center px-6 py-16 sm:px-10 sm:py-20 lg:order-1 lg:px-16 xl:px-20">
-            <div class="mx-auto w-full max-w-lg">
-                <h2 class="font-display text-3xl font-bold tracking-tight text-[var(--ink)] sm:text-4xl md:text-5xl">
-                    Write where you ship
-                </h2>
-                <p class="mt-5 text-lg leading-relaxed text-[var(--ink)]/70">
-                    Keep markup and utilities together in Django templates—no parallel design system to babysit.
-                </p>
-
-                <div class="mt-12 border-t border-[var(--sand-cool)] pt-10">
-                    <p class="text-sm font-medium tracking-wide text-[var(--sea)]">In your template</p>
-                    <pre class="mt-4 overflow-x-auto text-sm leading-relaxed text-[var(--ink)]/80"><code>{% verbatim %}{% load static tailwind_tags %}
-{% tailwind_css %}
-
-<h1 class="text-4xl font-bold text-sky-700">
-  Hello Tailwind
-</h1>{% endverbatim %}</code></pre>
-                </div>
-            </div>
-        </div>
-
-        <div class="relative order-1 min-h-[42vh] lg:order-2 lg:min-h-full">
-            <img
-                class="section-image absolute inset-0 h-full w-full object-cover object-center"
-                src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1800&q=80"
-                alt="Modern glass building against a clear sky"
-                width="1800"
-                height="1200"
-                loading="lazy"
-            >
-            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[var(--foam)]/30 lg:bg-gradient-to-l lg:from-transparent lg:to-[var(--foam)]/50"></div>
-        </div>
-    </div>
+<!-- ── CTA FOOTER STRIP ────────────────────────────────────── -->
+<section class="bg-[var(--terra)] py-16 text-white">
+  <div class="mx-auto max-w-6xl px-6 text-center sm:px-10 gsap-reveal">
+    <h2 class="font-display text-3xl font-bold sm:text-4xl">Your next adventure awaits</h2>
+    <p class="mt-4 text-white/80">Join thousands of travellers who've discovered India with WanderBook.</p>
+    <a href="{% url 'signup' %}" class="mt-8 inline-block rounded-md bg-white px-8 py-3 text-sm font-bold text-[var(--terra)] transition hover:bg-[var(--sand)]">
+      Get started — it's free
+    </a>
+  </div>
 </section>
 {% endblock %}

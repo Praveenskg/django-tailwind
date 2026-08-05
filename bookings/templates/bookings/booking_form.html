@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load heroicons %}
+
+{% block title %}Book {{ package.name }} · WanderBook{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--cloud)]">
+  {% include "core/_navbar.html" with variant="light" %}
+
+  <main class="mx-auto max-w-5xl px-6 py-12 sm:px-10">
+    <a href="{% url 'destination_detail' package.destination.slug %}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[var(--dusk)]/70 transition hover:text-[var(--dusk)]">
+      ← {{ package.destination.name }}
+    </a>
+    <div class="mt-6 grid gap-10 lg:grid-cols-5">
+      <!-- Form -->
+      <section class="lg:col-span-3">
+        <p class="text-sm font-semibold uppercase tracking-widest text-[var(--terra)]">Confirm your booking</p>
+        <h1 class="mt-2 font-display text-3xl font-bold text-[var(--dusk)]">{{ package.name }}</h1>
+
+        <form method="post" class="mt-8 space-y-6" novalidate>
+          {% csrf_token %}
+
+          {% if form.non_field_errors %}
+            <div class="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+              {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+            </div>
+          {% endif %}
+
+          <div>
+            <label for="id_travel_date" class="mb-2 block text-sm font-semibold text-[var(--dusk)]">
+              Travel date
+            </label>
+            {{ form.travel_date }}
+            {% if form.travel_date.errors %}
+              <p class="mt-1.5 text-sm text-red-600">{{ form.travel_date.errors.0 }}</p>
+            {% endif %}
+          </div>
+
+          <div>
+            <label for="id_num_travelers" class="mb-2 block text-sm font-semibold text-[var(--dusk)]">
+              Number of travelers
+            </label>
+            {{ form.num_travelers }}
+            {% if form.num_travelers.errors %}
+              <p class="mt-1.5 text-sm text-red-600">{{ form.num_travelers.errors.0 }}</p>
+            {% endif %}
+            <p class="mt-1.5 text-xs text-[var(--dusk)]/55">Max {{ package.max_seats }} seats per booking.</p>
+          </div>
+
+          <div>
+            <label for="id_notes" class="mb-2 block text-sm font-semibold text-[var(--dusk)]">
+              Special requests <span class="font-normal text-[var(--dusk)]/50">(optional)</span>
+            </label>
+            {{ form.notes }}
+            {% if form.notes.errors %}
+              <p class="mt-1.5 text-sm text-red-600">{{ form.notes.errors.0 }}</p>
+            {% endif %}
+          </div>
+
+          <button type="submit"
+            class="inline-flex w-full items-center justify-center rounded-xl bg-[var(--sky)] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[var(--sky-deep)]">
+            Confirm booking
+          </button>
+        </form>
+      </section>
+
+      <!-- Summary card -->
+      <aside class="lg:col-span-2">
+        <div class="sticky top-6 overflow-hidden rounded-2xl border border-[var(--slate)] bg-white shadow-sm">
+          {% if package.destination.cover_image_url %}
+            <img src="{{ package.destination.cover_image_url }}" alt="{{ package.destination.name }}"
+              class="h-40 w-full object-cover" width="600" height="250" loading="lazy">
+          {% endif %}
+          <div class="p-6">
+            <p class="text-xs font-semibold uppercase tracking-widest text-[var(--terra)]">{{ package.destination.name }}</p>
+            <h2 class="mt-1 font-display text-lg font-bold text-[var(--dusk)]">{{ package.name }}</h2>
+            <p class="mt-1.5 text-sm text-[var(--dusk)]/60">{{ package.duration_days }} Days · {{ package.duration_nights }} Nights</p>
+
+            {% if package.highlights_list %}
+              <ul class="mt-4 space-y-1.5 border-t border-[var(--slate)] pt-4">
+                {% for hl in package.highlights_list|slice:":4" %}
+                  <li class="flex items-start gap-2 text-xs text-[var(--dusk)]/70">
+                    {% heroicon "check" "mt-0.5 h-3.5 w-3.5 shrink-0 text-[var(--sky)]" %}
+                    {{ hl }}
+                  </li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+            <div class="mt-5 border-t border-[var(--slate)] pt-5">
+              <div class="flex items-baseline justify-between">
+                <p class="text-sm text-[var(--dusk)]/60">Price per person</p>
+                <p class="font-display text-xl font-bold text-[var(--dusk)]">₹{{ package.price_per_person }}</p>
+              </div>
+              <p class="mt-2 text-xs text-[var(--dusk)]/50">Total will be calculated at checkout.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>
+
+<style>
+  #id_travel_date,
+  #id_num_travelers,
+  #id_notes {
+    width: 100%;
+    border-radius: 0.75rem;
+    border: 1px solid var(--slate);
+    background: white;
+    padding: 0.75rem 1rem;
+    color: var(--dusk);
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  #id_travel_date:focus,
+  #id_num_travelers:focus,
+  #id_notes:focus {
+    border-color: var(--sky);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--sky) 20%, transparent);
+  }
+</style>
+{% endblock %}

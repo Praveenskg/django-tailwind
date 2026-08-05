@@ -1,107 +1,119 @@
-{% extends "base.html" %}
-
-{% block title %}Login · Django Tailwind{% endblock %}
-
+{% extends "base.html" %} {% block title %}Login · WanderBook{% endblock %}
 {% block content %}
 <section class="relative min-h-screen overflow-hidden bg-(--ink)">
-    <div class="absolute inset-0">
-        <img
-            class="hero-image h-full w-full object-cover object-center opacity-40"
-            src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2400&q=80"
-            alt="Misty mountain lake at dawn"
-            width="2400"
-            height="1600"
-            fetchpriority="high"
+  <div class="absolute inset-0">
+    <img
+      class="hero-image h-full w-full object-cover object-center opacity-40"
+      src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=2400&q=80"
+      alt="Stunning mountain landscape"
+      width="2400"
+      height="1600"
+      fetchpriority="high"
+    />
+    <div
+      class="absolute inset-0 bg-linear-to-r from-(--ink) via-(--ink)/85 to-(--ink)/40"
+    ></div>
+  </div>
+
+  <div
+    class="relative z-10 mx-auto grid min-h-screen max-w-6xl items-center gap-12 px-6 py-16 sm:px-10 lg:grid-cols-2"
+  >
+    <div class="max-w-md">
+      <a
+        href="{% url 'home' %}"
+        class="font-display text-sm font-semibold tracking-wide text-(--sand-cool) transition hover:text-white"
+      >
+        ← WanderBook
+      </a>
+      <h1
+        class="mt-8 font-display text-4xl font-bold tracking-tight text-white sm:text-5xl"
+      >
+        Welcome back
+      </h1>
+      <p class="mt-4 text-lg leading-relaxed text-white/70">
+        Sign in to continue to your dashboard.
+      </p>
+    </div>
+
+    <div class="w-full max-w-md justify-self-start lg:justify-self-end">
+      <form
+        method="post"
+        action="{% url 'login' %}"
+        class="space-y-5 border border-white/15 bg-white/5 p-8 backdrop-blur-md sm:p-10"
+        novalidate
+      >
+        {% csrf_token %} {% if next %}
+        <input type="hidden" name="next" value="{{ next }}" />
+        {% endif %} {% if form.non_field_errors %}
+        <div class="rounded-md bg-red-500/15 px-4 py-3 text-sm text-red-200">
+          {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <div>
+          <label
+            for="id_username"
+            class="mb-2 block text-sm font-medium text-white/80"
+          >
+            Username
+          </label>
+          <input
+            type="text"
+            name="username"
+            id="id_username"
+            value="{{ form.username.value|default:'' }}"
+            autocomplete="username"
+            autofocus
+            required
+            class="w-full rounded-md border border-white/20 bg-black/20 px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-(--sea) focus:ring-2 focus:ring-(--sea)/40"
+            placeholder="your-username"
+          />
+          {% if form.username.errors %}
+          <p class="mt-2 text-sm text-red-300">{{ form.username.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <div>
+          <label
+            for="id_password"
+            class="mb-2 block text-sm font-medium text-white/80"
+          >
+            Password
+          </label>
+          <input
+            type="password"
+            name="password"
+            id="id_password"
+            autocomplete="current-password"
+            required
+            class="w-full rounded-md border border-white/20 bg-black/20 px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-(--sea) focus:ring-2 focus:ring-(--sea)/40"
+            placeholder="••••••••"
+          />
+          {% if form.password.errors %}
+          <p class="mt-2 text-sm text-red-300">{{ form.password.errors.0 }}</p>
+          {% endif %}
+        </div>
+
+        <button
+          type="submit"
+          class="mt-2 inline-flex w-full items-center justify-center rounded-md bg-(--sea) px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-(--sea-deep) hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
-        <div class="absolute inset-0 bg-linear-to-r from-(--ink) via-(--ink)/85 to-(--ink)/40"></div>
+          Sign in
+        </button>
+
+        <p class="pt-2 text-center text-sm text-white/55">
+          New here?
+          <a
+            href="{% url 'signup' %}"
+            class="font-medium text-(--sand-cool) underline-offset-2 hover:text-white hover:underline"
+          >
+            Create an account
+          </a>
+        </p>
+      </form>
     </div>
-
-    <div class="relative z-10 mx-auto grid min-h-screen max-w-6xl items-center gap-12 px-6 py-16 sm:px-10 lg:grid-cols-2">
-        <div class="max-w-md">
-            <a href="{% url 'home' %}" class="font-display text-sm font-semibold tracking-wide text-(--sand-cool) transition hover:text-white">
-                ← Django Tailwind
-            </a>
-            <h1 class="mt-8 font-display text-4xl font-bold tracking-tight text-white sm:text-5xl">
-                Welcome back
-            </h1>
-            <p class="mt-4 text-lg leading-relaxed text-white/70">
-                Sign in to continue to your dashboard.
-            </p>
-        </div>
-
-        <div class="w-full max-w-md justify-self-start lg:justify-self-end">
-                <form
-                    method="post"
-                    action="{% url 'login' %}"
-                    class="space-y-5 border border-white/15 bg-white/5 p-8 backdrop-blur-md sm:p-10"
-                    novalidate
-                >
-                    {% csrf_token %}
-                    {% if next %}
-                        <input type="hidden" name="next" value="{{ next }}">
-                    {% endif %}
-
-                    {% if form.non_field_errors %}
-                        <div class="rounded-md bg-red-500/15 px-4 py-3 text-sm text-red-200">
-                            {% for error in form.non_field_errors %}
-                                <p>{{ error }}</p>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-
-                    <div>
-                        <label for="id_username" class="mb-2 block text-sm font-medium text-white/80">
-                            Username
-                        </label>
-                        <input
-                            type="text"
-                            name="username"
-                            id="id_username"
-                            value="{{ form.username.value|default:'' }}"
-                            autocomplete="username"
-                            autofocus
-                            required
-                            class="w-full rounded-md border border-white/20 bg-black/20 px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-(--sea) focus:ring-2 focus:ring-(--sea)/40"
-                            placeholder="your-username"
-                        >
-                        {% if form.username.errors %}
-                            <p class="mt-2 text-sm text-red-300">{{ form.username.errors.0 }}</p>
-                        {% endif %}
-                    </div>
-
-                    <div>
-                        <label for="id_password" class="mb-2 block text-sm font-medium text-white/80">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            name="password"
-                            id="id_password"
-                            autocomplete="current-password"
-                            required
-                            class="w-full rounded-md border border-white/20 bg-black/20 px-4 py-3 text-white outline-none transition placeholder:text-white/35 focus:border-(--sea) focus:ring-2 focus:ring-(--sea)/40"
-                            placeholder="••••••••"
-                        >
-                        {% if form.password.errors %}
-                            <p class="mt-2 text-sm text-red-300">{{ form.password.errors.0 }}</p>
-                        {% endif %}
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="mt-2 inline-flex w-full items-center justify-center rounded-md bg-(--sea) px-6 py-3 text-sm font-semibold text-white transition duration-300 hover:bg-(--sea-deep) hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                    >
-                        Sign in
-                    </button>
-
-                    <p class="pt-2 text-center text-sm text-white/55">
-                        New here?
-                        <a href="{% url 'signup' %}" class="font-medium text-(--sand-cool) underline-offset-2 hover:text-white hover:underline">
-                            Create an account
-                        </a>
-                    </p>
-                </form>
-        </div>
-    </div>
+  </div>
 </section>
 {% endblock %}

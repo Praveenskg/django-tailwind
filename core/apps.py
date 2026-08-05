@@ -2,4 +2,11 @@ from django.apps import AppConfig
 
 
 class CoreConfig(AppConfig):
-    name = 'core'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "core"
+
+    def ready(self):
+        from . import signals  # noqa: F401
+        from .user_extensions import patch_user_model
+
+        patch_user_model()

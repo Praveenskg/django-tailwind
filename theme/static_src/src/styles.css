@@ -10,12 +10,23 @@
 @source "../../../**/*.{html,py,js}";
 
 :root {
-  --ink: #10231f;
-  --mist: #e8f0ed;
-  --foam: #f4faf7;
-  --sea: #1f6f5b;
-  --sea-deep: #145244;
-  --sand-cool: #c5d4ce;
+  /* legacy aliases kept so old templates still compile */
+  --ink: #1e293b;
+  --mist: #e0f2fe;
+  --foam: #f0f9ff;
+  --sea: #0ea5e9;
+  --sea-deep: #0369a1;
+  --sand-cool: #bae6fd;
+
+  /* travel palette */
+  --dusk: #1e293b;
+  --sky: #0ea5e9;
+  --sky-deep: #0369a1;
+  --terra: #c2410c;
+  --terra-light: #fed7aa;
+  --sand: #fef3c7;
+  --slate: #bae6fd;
+  --cloud: #f0f9ff;
 }
 
 @keyframes hero-image-drift {
@@ -91,13 +102,25 @@
   animation: section-image-settle 14s ease-out forwards;
 }
 
+.dashboard-rise {
+  opacity: 0;
+  animation: hero-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.dashboard-rise-delay-1 { animation-delay: 0.08s; }
+.dashboard-rise-delay-2 { animation-delay: 0.16s; }
+.dashboard-rise-delay-3 { animation-delay: 0.24s; }
+.dashboard-rise-delay-4 { animation-delay: 0.32s; }
+
 @media (prefers-reduced-motion: reduce) {
-  .hero-image,
   .hero-rise,
   .hero-accent-line,
-  .section-image {
+  .section-image,
+  .dashboard-rise,
+  .mobile-menu-panel {
     animation: none;
     opacity: 1;
     transform: none;
+    transition: none;
   }
 }

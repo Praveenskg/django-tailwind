@@ -1,0 +1,185 @@
+{% comment %}
+  variant: "hero" (transparent, fixed, white text) | "light" (solid, sticky, dark text)
+  Optional: profile (for avatar on dashboard)
+{% endcomment %}
+{% load heroicons %}
+
+{% if variant == "hero" %}
+<nav id="site-nav" class="fixed left-0 right-0 top-0 z-50 transition-all duration-300" aria-label="Main navigation">
+  <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-5 sm:px-10">
+{% else %}
+<header class="sticky top-0 z-50 border-b border-[var(--slate)] bg-white/90 backdrop-blur-md">
+  <nav id="site-nav" class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 sm:px-10" aria-label="Main navigation">
+{% endif %}
+
+    <a href="{% url 'home' %}" class="flex items-center gap-2 font-display text-lg font-bold tracking-tight {% if variant == 'hero' %}text-white drop-shadow{% else %}text-[var(--dusk)]{% endif %}">
+      {% if variant == 'hero' %}
+        {% heroicon "paper-airplane" "h-5 w-5" %}
+      {% else %}
+        {% heroicon "paper-airplane" "h-5 w-5 text-[var(--sky)]" %}
+      {% endif %}
+      WanderBook
+    </a>
+
+    {# Desktop links #}
+    <div class="hidden items-center gap-2 md:flex md:gap-4">
+      <a href="{% url 'destinations' %}" class="text-sm font-medium transition {% if variant == 'hero' %}text-white/85 hover:text-white{% else %}text-[var(--dusk)]/65 hover:text-[var(--dusk)]{% endif %}">Destinations</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'my_trips' %}" class="text-sm font-medium transition {% if variant == 'hero' %}text-white/85 hover:text-white{% else %}text-[var(--dusk)]/65 hover:text-[var(--dusk)]{% endif %}">My Trips</a>
+        {% if profile %}
+          <a href="{% url 'profile' %}" class="flex items-center gap-2 rounded-full border px-2 py-1.5 pr-3 transition {% if variant == 'hero' %}border-white/30 bg-white/10 text-white hover:bg-white/20{% else %}border-[var(--slate)] bg-white text-[var(--dusk)]/80 hover:border-[var(--sky)]{% endif %}">
+            {% if profile.avatar %}
+              <img src="{{ profile.avatar.url }}" alt="{{ user.username }}" class="h-7 w-7 rounded-full object-cover" width="28" height="28">
+            {% else %}
+              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-[var(--sky)] text-xs font-bold text-white">{{ user.username|slice:":1"|upper }}</span>
+            {% endif %}
+            <span>{{ user.get_full_name|default:user.username }}</span>
+          </a>
+        {% else %}
+          <a href="{% url 'dashboard' %}" class="rounded-md px-4 py-2 text-sm font-semibold transition {% if variant == 'hero' %}border border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20{% else %}border border-[var(--slate)] text-[var(--dusk)] hover:border-[var(--sky)]{% endif %}">Dashboard</a>
+        {% endif %}
+        <a href="{% url 'logout' %}" class="rounded-md px-4 py-2 text-sm font-semibold text-white transition {% if variant == 'hero' %}bg-[var(--terra)] hover:bg-orange-700{% else %}bg-[var(--dusk)] hover:bg-[var(--sky-deep)]{% endif %}">Logout</a>
+      {% else %}
+        <a href="{% url 'login' %}" class="rounded-md px-4 py-2 text-sm font-semibold transition {% if variant == 'hero' %}border border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20{% else %}border border-[var(--slate)] text-[var(--dusk)] hover:border-[var(--sky)]{% endif %}">Login</a>
+        <a href="{% url 'signup' %}" class="rounded-md bg-[var(--terra)] px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-700">Sign up</a>
+      {% endif %}
+    </div>
+
+    {# Hamburger button (mobile only) #}
+    <button
+      type="button"
+      id="nav-toggle"
+      class="flex h-10 w-10 items-center justify-center rounded-md transition md:hidden {% if variant == 'hero' %}text-white hover:bg-white/10{% else %}text-[var(--dusk)] hover:bg-[var(--cloud)]{% endif %}"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      {% heroicon "bars-3" "h-6 w-6" "nav-icon-open" %}
+      {% heroicon "x-mark" "hidden h-6 w-6" "nav-icon-close" %}
+    </button>
+
+{% if variant == "hero" %}
+  </div>
+</nav>
+{% else %}
+  </nav>
+</header>
+{% endif %}
+
+{# Mobile menu backdrop #}
+<div id="mobile-menu-backdrop" class="mobile-menu-backdrop pointer-events-none fixed inset-0 z-[60] bg-[var(--dusk)]/60 opacity-0 backdrop-blur-sm transition-opacity duration-300 md:hidden" aria-hidden="true"></div>
+
+{# Mobile slide-in panel #}
+<div
+  id="mobile-menu"
+  class="mobile-menu-panel fixed right-0 top-0 z-[70] flex h-full w-[min(100%,20rem)] translate-x-full flex-col bg-white shadow-2xl transition-transform duration-300 ease-out md:hidden"
+  aria-hidden="true"
+>
+  <div class="flex items-center justify-between border-b border-[var(--slate)] px-5 py-4">
+    <span class="font-display text-lg font-bold text-[var(--dusk)]">Menu</span>
+    <button type="button" id="nav-close" class="flex h-9 w-9 items-center justify-center rounded-md text-[var(--dusk)] hover:bg-[var(--cloud)]" aria-label="Close menu">
+      {% heroicon "x-mark" "h-5 w-5" %}
+    </button>
+  </div>
+
+  {% if user.is_authenticated %}
+    <div class="flex items-center gap-3 border-b border-[var(--slate)] px-5 py-4">
+      {% if profile and profile.avatar %}
+        <img src="{{ profile.avatar.url }}" alt="" class="h-10 w-10 rounded-full object-cover" width="40" height="40">
+      {% else %}
+        <span class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--sky)] text-sm font-bold text-white">{{ user.username|slice:":1"|upper }}</span>
+      {% endif %}
+      <div>
+        <p class="font-semibold text-[var(--dusk)]">{{ user.get_full_name|default:user.username }}</p>
+        <p class="text-xs text-[var(--dusk)]/55">{{ user.email }}</p>
+      </div>
+    </div>
+  {% endif %}
+
+  <nav class="flex flex-1 flex-col gap-1 overflow-y-auto px-3 py-4">
+    <a href="{% url 'home' %}" class="mobile-nav-link rounded-lg px-3 py-3 text-base font-medium text-[var(--dusk)] hover:bg-[var(--cloud)]">Home</a>
+    <a href="{% url 'destinations' %}" class="mobile-nav-link rounded-lg px-3 py-3 text-base font-medium text-[var(--dusk)] hover:bg-[var(--cloud)]">Destinations</a>
+    {% if user.is_authenticated %}
+      <a href="{% url 'my_trips' %}" class="mobile-nav-link rounded-lg px-3 py-3 text-base font-medium text-[var(--dusk)] hover:bg-[var(--cloud)]">My Trips</a>
+      <a href="{% url 'dashboard' %}" class="mobile-nav-link rounded-lg px-3 py-3 text-base font-medium text-[var(--dusk)] hover:bg-[var(--cloud)]">Dashboard</a>
+      <a href="{% url 'profile' %}" class="mobile-nav-link rounded-lg px-3 py-3 text-base font-medium text-[var(--dusk)] hover:bg-[var(--cloud)]">Edit profile</a>
+    {% endif %}
+  </nav>
+
+  <div class="border-t border-[var(--slate)] p-4">
+    {% if user.is_authenticated %}
+      <a href="{% url 'logout' %}" class="block w-full rounded-lg bg-[var(--dusk)] px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-[var(--sky-deep)]">Logout</a>
+    {% else %}
+      <a href="{% url 'login' %}" class="mb-2 block w-full rounded-lg border border-[var(--slate)] px-4 py-3 text-center text-sm font-semibold text-[var(--dusk)] transition hover:border-[var(--sky)]">Login</a>
+      <a href="{% url 'signup' %}" class="block w-full rounded-lg bg-[var(--terra)] px-4 py-3 text-center text-sm font-semibold text-white transition hover:bg-orange-700">Sign up free</a>
+    {% endif %}
+  </div>
+</div>
+
+<script>
+(function () {
+  var toggle = document.getElementById('nav-toggle');
+  var closeBtn = document.getElementById('nav-close');
+  var menu = document.getElementById('mobile-menu');
+  var backdrop = document.getElementById('mobile-menu-backdrop');
+  var iconOpen = document.getElementById('nav-icon-open');
+  var iconClose = document.getElementById('nav-icon-close');
+  if (!toggle || !menu) return;
+
+  function openMenu() {
+    menu.classList.remove('translate-x-full');
+    menu.setAttribute('aria-hidden', 'false');
+    backdrop.classList.add('opacity-100', 'pointer-events-auto');
+    backdrop.setAttribute('aria-hidden', 'false');
+    toggle.setAttribute('aria-expanded', 'true');
+    iconOpen.classList.add('hidden');
+    iconClose.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    menu.classList.add('translate-x-full');
+    menu.setAttribute('aria-hidden', 'true');
+    backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+    backdrop.setAttribute('aria-hidden', 'true');
+    toggle.setAttribute('aria-expanded', 'false');
+    iconOpen.classList.remove('hidden');
+    iconClose.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  toggle.addEventListener('click', function () {
+    if (menu.classList.contains('translate-x-full')) openMenu();
+    else closeMenu();
+  });
+  if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+  backdrop.addEventListener('click', closeMenu);
+  menu.querySelectorAll('.mobile-nav-link').forEach(function (link) {
+    link.addEventListener('click', closeMenu);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeMenu();
+  });
+  window.addEventListener('resize', function () {
+    if (window.innerWidth >= 768) closeMenu();
+  });
+
+  {% if variant == "hero" %}
+  var nav = document.getElementById('site-nav');
+  function onScroll() {
+    if (!nav) return;
+    if (window.scrollY > 60) {
+      nav.style.background = 'rgba(30,41,59,0.92)';
+      nav.style.backdropFilter = 'blur(12px)';
+      nav.style.boxShadow = '0 2px 16px rgba(0,0,0,0.18)';
+    } else {
+      nav.style.background = '';
+      nav.style.backdropFilter = '';
+      nav.style.boxShadow = '';
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  {% endif %}
+})();
+</script>

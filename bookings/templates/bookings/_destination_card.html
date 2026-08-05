@@ -1,0 +1,19 @@
+<a href="{% url 'destination_detail' dest.slug %}" data-gsap-hover
+  class="group relative flex overflow-hidden rounded-2xl bg-[var(--dusk)] shadow transition hover:shadow-xl">
+  {% if dest.cover_image_url %}
+    <img src="{{ dest.cover_image_url }}" alt="{{ dest.name }}"
+      class="{% if large %}h-64{% else %}h-52{% endif %} w-full object-cover transition duration-500 group-hover:scale-105"
+      width="600" height="400" loading="lazy">
+  {% else %}
+    <div class="{% if large %}h-64{% else %}h-52{% endif %} w-full bg-gradient-to-br from-[var(--sky)] to-[var(--dusk)]"></div>
+  {% endif %}
+  <div class="absolute inset-0 bg-gradient-to-t from-[var(--dusk)]/85 via-[var(--dusk)]/25 to-transparent"></div>
+  <div class="absolute bottom-0 left-0 p-5">
+    <p class="text-xs font-semibold uppercase tracking-widest text-white/65">{{ dest.country }}</p>
+    <p class="mt-1 font-display text-lg font-bold text-white group-hover:text-[var(--terra-light)] transition">{{ dest.name }}</p>
+    {% if dest.tagline %}
+      <p class="mt-0.5 text-xs text-white/70 line-clamp-1">{{ dest.tagline }}</p>
+    {% endif %}
+    <p class="mt-2 text-xs font-semibold text-[var(--sky)]">{{ dest.packages.count }} package{{ dest.packages.count|pluralize }} →</p>
+  </div>
+</a>

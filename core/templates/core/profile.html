@@ -20,11 +20,49 @@
             Edit profile
         </h1>
         <p class="mt-3 text-lg text-[var(--ink)]/70">
-            Update your name and email. Username: <span class="font-medium text-[var(--ink)]">{{ user.username }}</span>
+            Update your photo, name, and email. Username:
+            <span class="font-medium text-[var(--ink)]">{{ user.username }}</span>
         </p>
 
-        <form method="post" action="{% url 'profile' %}" class="mt-10 space-y-5 border border-[var(--sand-cool)] bg-white p-8" novalidate>
+        <form
+            method="post"
+            action="{% url 'profile' %}"
+            enctype="multipart/form-data"
+            class="mt-10 space-y-5 border border-[var(--sand-cool)] bg-white p-8"
+            novalidate
+        >
             {% csrf_token %}
+
+            <div class="flex items-center gap-5">
+                {% if profile.avatar %}
+                    <img
+                        src="{{ profile.avatar.url }}"
+                        alt="{{ user.username }}"
+                        class="h-20 w-20 rounded-full object-cover"
+                        width="80"
+                        height="80"
+                    >
+                {% else %}
+                    <div class="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--ink)] font-display text-2xl font-bold text-white">
+                        {{ user.username|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+                <div class="flex-1">
+                    <label for="id_avatar" class="mb-2 block text-sm font-medium text-[var(--ink)]/80">
+                        Profile picture
+                    </label>
+                    <input
+                        type="file"
+                        name="avatar"
+                        id="id_avatar"
+                        accept="image/*"
+                        class="block w-full text-sm text-[var(--ink)]/70 file:mr-4 file:rounded-md file:border-0 file:bg-[var(--sea)] file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-[var(--sea-deep)]"
+                    >
+                    {% if form.avatar.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.avatar.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
 
             <div>
                 <label for="id_first_name" class="mb-2 block text-sm font-medium text-[var(--ink)]/80">First name</label>

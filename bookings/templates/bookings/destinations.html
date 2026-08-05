@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}Destinations · WanderBook{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--cloud)]">
+  {% include "core/_navbar.html" with variant="light" %}
+
+  <main class="mx-auto max-w-6xl px-6 py-12 sm:px-10">
+    <!-- Page heading + search -->
+    <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between" data-gsap-page-heading>
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-widest text-[var(--terra)]">Explore India</p>
+        <h1 class="mt-1 font-display text-4xl font-bold tracking-tight text-[var(--dusk)] sm:text-5xl">
+          All Destinations
+        </h1>
+      </div>
+      <form method="get" action="{% url 'destinations' %}" class="flex overflow-hidden rounded-xl border border-[var(--slate)] bg-white">
+        <input name="q" type="search" value="{{ query }}" placeholder="Search…"
+          class="w-48 bg-transparent px-4 py-2.5 text-sm text-[var(--dusk)] outline-none placeholder-[var(--dusk)]/40">
+        <button type="submit" class="bg-[var(--sky)] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[var(--sky-deep)]">Go</button>
+      </form>
+    </div>
+
+    {% if query %}
+      <p class="mt-5 text-[var(--dusk)]/65 text-sm">Showing results for "<strong>{{ query }}</strong>"</p>
+    {% endif %}
+
+    <!-- Featured -->
+    {% if not query and featured %}
+      <section class="mt-12">
+        <h2 class="font-display text-2xl font-bold text-[var(--dusk)]">Featured</h2>
+        <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-gsap-stagger>
+          {% for dest in featured %}
+            {% include "bookings/_destination_card.html" with dest=dest large=True %}
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
+
+    <!-- All / search results -->
+    <section class="mt-12">
+      {% if not query and rest %}
+        <h2 class="font-display text-2xl font-bold text-[var(--dusk)]">More destinations</h2>
+        <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-gsap-stagger>
+          {% for dest in rest %}
+            {% include "bookings/_destination_card.html" with dest=dest large=False %}
+          {% endfor %}
+        </div>
+      {% elif query %}
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" data-gsap-stagger>
+          {% for dest in destinations %}
+            {% include "bookings/_destination_card.html" with dest=dest large=False %}
+          {% empty %}
+            <p class="col-span-3 rounded-xl border border-dashed border-[var(--slate)] bg-white p-12 text-center text-[var(--dusk)]/55">
+              No destinations found for "{{ query }}".
+            </p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    </section>
+  </main>
+</div>
+{% endblock %}
