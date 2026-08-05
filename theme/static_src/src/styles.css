@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+/**
+  * A catch-all path to Django template files, JavaScript, and Python files
+  * that contain Tailwind CSS classes and will be scanned by Tailwind to generate the final CSS file.
+  *
+  * If your final CSS file is not being updated after code changes, you may want to broaden or narrow
+  * the scope of this path.
+  */
+@source "../../../**/*.{html,py,js}";
+
+:root {
+  --ink: #10231f;
+  --mist: #e8f0ed;
+  --foam: #f4faf7;
+  --sea: #1f6f5b;
+  --sea-deep: #145244;
+  --sand-cool: #c5d4ce;
+}
+
+@keyframes hero-image-drift {
+  from {
+    transform: scale(1.08) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1) translate3d(0, -1.5%, 0);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 1.75rem, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes hero-line {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.hero-image {
+  animation: hero-image-drift 18s ease-out forwards;
+}
+
+.hero-rise {
+  opacity: 0;
+  animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.hero-rise-delay-1 {
+  animation-delay: 0.12s;
+}
+
+.hero-rise-delay-2 {
+  animation-delay: 0.28s;
+}
+
+.hero-rise-delay-3 {
+  animation-delay: 0.44s;
+}
+
+.hero-rise-delay-4 {
+  animation-delay: 0.58s;
+}
+
+.hero-accent-line {
+  transform-origin: left center;
+  animation: hero-line 1s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+  transform: scaleX(0);
+}
+
+@keyframes section-image-settle {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.section-image {
+  animation: section-image-settle 14s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-image,
+  .hero-rise,
+  .hero-accent-line,
+  .section-image {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

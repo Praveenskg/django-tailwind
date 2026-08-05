@@ -1,0 +1,6 @@
+cookiecutter==2.7.1
+Django==6.0.8
+django-browser-reload==1.21.0
+django-tailwind==4.5.0
+honcho==2.0.0
+pytailwindcss==0.3.1
