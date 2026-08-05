@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Edit profile · Django Tailwind{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--foam)]">
+    <header class="border-b border-[var(--sand-cool)]/70 bg-white/70 backdrop-blur-sm">
+        <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5 sm:px-10">
+            <a href="{% url 'dashboard' %}" class="font-display text-lg font-bold tracking-tight text-[var(--ink)]">
+                ← Dashboard
+            </a>
+            <a href="{% url 'logout' %}" class="rounded-md bg-[var(--ink)] px-4 py-2 text-sm font-medium text-white transition hover:bg-[var(--sea-deep)]">
+                Logout
+            </a>
+        </div>
+    </header>
+
+    <main class="mx-auto max-w-xl px-6 py-14 sm:px-10 sm:py-20">
+        <h1 class="font-display text-4xl font-bold tracking-tight text-[var(--ink)]">
+            Edit profile
+        </h1>
+        <p class="mt-3 text-lg text-[var(--ink)]/70">
+            Update your name and email. Username: <span class="font-medium text-[var(--ink)]">{{ user.username }}</span>
+        </p>
+
+        <form method="post" action="{% url 'profile' %}" class="mt-10 space-y-5 border border-[var(--sand-cool)] bg-white p-8" novalidate>
+            {% csrf_token %}
+
+            <div>
+                <label for="id_first_name" class="mb-2 block text-sm font-medium text-[var(--ink)]/80">First name</label>
+                <input
+                    type="text"
+                    name="first_name"
+                    id="id_first_name"
+                    value="{{ form.first_name.value|default:'' }}"
+                    class="w-full rounded-md border border-[var(--sand-cool)] bg-[var(--foam)] px-4 py-3 text-[var(--ink)] outline-none focus:border-[var(--sea)] focus:ring-2 focus:ring-[var(--sea)]/30"
+                >
+                {% if form.first_name.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.first_name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="id_last_name" class="mb-2 block text-sm font-medium text-[var(--ink)]/80">Last name</label>
+                <input
+                    type="text"
+                    name="last_name"
+                    id="id_last_name"
+                    value="{{ form.last_name.value|default:'' }}"
+                    class="w-full rounded-md border border-[var(--sand-cool)] bg-[var(--foam)] px-4 py-3 text-[var(--ink)] outline-none focus:border-[var(--sea)] focus:ring-2 focus:ring-[var(--sea)]/30"
+                >
+                {% if form.last_name.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.last_name.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div>
+                <label for="id_email" class="mb-2 block text-sm font-medium text-[var(--ink)]/80">Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    id="id_email"
+                    value="{{ form.email.value|default:'' }}"
+                    class="w-full rounded-md border border-[var(--sand-cool)] bg-[var(--foam)] px-4 py-3 text-[var(--ink)] outline-none focus:border-[var(--sea)] focus:ring-2 focus:ring-[var(--sea)]/30"
+                >
+                {% if form.email.errors %}
+                    <p class="mt-2 text-sm text-red-600">{{ form.email.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <button
+                type="submit"
+                class="inline-flex w-full items-center justify-center rounded-md bg-[var(--sea)] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[var(--sea-deep)]"
+            >
+                Save changes
+            </button>
+        </form>
+    </main>
+</div>
+{% endblock %}

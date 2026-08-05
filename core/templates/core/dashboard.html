@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard · Django Tailwind{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[var(--foam)]">
+    <header class="border-b border-[var(--sand-cool)]/70 bg-white/70 backdrop-blur-sm">
+        <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-5 sm:px-10">
+            <a href="{% url 'home' %}" class="font-display text-lg font-bold tracking-tight text-[var(--ink)]">
+                Django Tailwind
+            </a>
+            <nav class="flex items-center gap-3 text-sm font-medium">
+                <a href="{% url 'home' %}" class="text-[var(--ink)]/65 transition hover:text-[var(--ink)]">Home</a>
+                <a href="{% url 'logout' %}" class="rounded-md bg-[var(--ink)] px-4 py-2 text-white transition hover:bg-[var(--sea-deep)]">
+                    Logout
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="mx-auto max-w-5xl px-6 py-14 sm:px-10 sm:py-20">
+        <p class="text-sm font-semibold tracking-wide text-[var(--sea)]">Dashboard</p>
+        <h1 class="mt-3 font-display text-4xl font-bold tracking-tight text-[var(--ink)] sm:text-5xl">
+            Welcome, {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}
+        </h1>
+        <p class="mt-4 max-w-2xl text-lg leading-relaxed text-[var(--ink)]/70">
+            You're signed in. Use the shortcuts below to jump into the parts of the stack you need.
+        </p>
+
+        <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <a href="{% url 'profile' %}" class="group border border-[var(--sand-cool)] bg-white p-6 transition hover:border-[var(--sea)]">
+                <p class="font-display text-xl font-semibold text-[var(--ink)] group-hover:text-[var(--sea)]">Edit profile</p>
+                <p class="mt-2 text-sm leading-relaxed text-[var(--ink)]/65">Change your first name, last name, and email.</p>
+            </a>
+
+            <a href="{% url 'home' %}" class="group border border-[var(--sand-cool)] bg-white p-6 transition hover:border-[var(--sea)]">
+                <p class="font-display text-xl font-semibold text-[var(--ink)] group-hover:text-[var(--sea)]">Website</p>
+                <p class="mt-2 text-sm leading-relaxed text-[var(--ink)]/65">View the public landing page.</p>
+            </a>
+
+            <a href="{% url 'swagger-ui' %}" class="group border border-[var(--sand-cool)] bg-white p-6 transition hover:border-[var(--sea)]">
+                <p class="font-display text-xl font-semibold text-[var(--ink)] group-hover:text-[var(--sea)]">API docs</p>
+                <p class="mt-2 text-sm leading-relaxed text-[var(--ink)]/65">Explore JWT auth endpoints in Swagger.</p>
+            </a>
+
+            {% if user.is_staff %}
+                <a href="/admin/auth/user/" class="group border border-[var(--sand-cool)] bg-white p-6 transition hover:border-[var(--sea)]">
+                    <p class="font-display text-xl font-semibold text-[var(--ink)] group-hover:text-[var(--sea)]">Admin users</p>
+                    <p class="mt-2 text-sm leading-relaxed text-[var(--ink)]/65">Open users list — click a username to edit.</p>
+                </a>
+            {% endif %}
+        </div>
+    </main>
+</div>
+{% endblock %}

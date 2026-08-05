@@ -2,5 +2,10 @@ cookiecutter==2.7.1
 Django==6.0.8
 django-browser-reload==1.21.0
 django-tailwind==4.5.0
+django-unfold==0.102.0
+djangorestframework==3.17.1
+djangorestframework-simplejwt==5.5.1
+drf-spectacular==0.30.0
 honcho==2.0.0
+PyJWT==2.13.0
 pytailwindcss==0.3.1

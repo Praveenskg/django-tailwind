@@ -36,9 +36,11 @@ python manage.py tailwind start
 
 Hot reload is enabled via `django-browser-reload`.
 
-## Admin login
+## Login page
 
-Create a superuser (required before you can sign in):
+Open [http://127.0.0.1:8000/login/](http://127.0.0.1:8000/login/) and sign in with any existing user.
+
+Create a user first if needed:
 
 ```bash
 source .venv/bin/activate
@@ -46,9 +48,61 @@ python manage.py migrate          # if you haven't already
 python manage.py createsuperuser
 ```
 
-Enter a username, email (optional), and password when prompted.
+- Web login: [http://127.0.0.1:8000/login/](http://127.0.0.1:8000/login/)
+- Web signup: [http://127.0.0.1:8000/signup/](http://127.0.0.1:8000/signup/)
+- Dashboard (after login): [http://127.0.0.1:8000/dashboard/](http://127.0.0.1:8000/dashboard/)
+- Admin: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/) (styled with [Unfold](https://unfoldadmin.com/))
+- Logout: `/logout/`
 
-Then open [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/) and sign in with those credentials.
+## Auth API (JWT)
+
+Interactive docs (Swagger):
+
+- Swagger UI: [http://127.0.0.1:8000/api/docs/](http://127.0.0.1:8000/api/docs/)
+- ReDoc: [http://127.0.0.1:8000/api/redoc/](http://127.0.0.1:8000/api/redoc/)
+- OpenAPI schema: [http://127.0.0.1:8000/api/schema/](http://127.0.0.1:8000/api/schema/)
+
+Base URL: `http://127.0.0.1:8000/api/`
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `POST` | `/api/auth/register/` | No | Create a user |
+| `POST` | `/api/auth/login/` | No | Get access + refresh tokens |
+| `POST` | `/api/auth/refresh/` | No | Refresh access token |
+| `GET` | `/api/auth/me/` | Bearer | Current user profile |
+
+### Register
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/auth/register/ \
+  -H "Content-Type: application/json" \
+  -d '{"username":"demo","email":"demo@example.com","password":"StrongPass123!","password_confirm":"StrongPass123!"}'
+```
+
+### Login
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/auth/login/ \
+  -H "Content-Type: application/json" \
+  -d '{"username":"demo","password":"StrongPass123!"}'
+```
+
+Response includes `access` and `refresh` tokens.
+
+### Current user
+
+```bash
+curl http://127.0.0.1:8000/api/auth/me/ \
+  -H "Authorization: Bearer <access_token>"
+```
+
+### Refresh token
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/auth/refresh/ \
+  -H "Content-Type: application/json" \
+  -d '{"refresh":"<refresh_token>"}'
+```
 
 ## Production
 
@@ -63,6 +117,7 @@ python manage.py collectstatic
 
 ```
 config/                 # Django project settings & URLs
+api/                    # JWT auth API (register, login, me)
 core/                   # Main app (views, templates)
   templates/
     base.html           # Base layout with {% tailwind_css %}

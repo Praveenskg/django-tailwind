@@ -10,7 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
+
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -31,16 +35,21 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "unfold",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "drf_spectacular",
     "tailwind",
     "django_browser_reload",
     "core",
     "theme",
+    "api",
 ]
 
 MIDDLEWARE = [
@@ -56,6 +65,10 @@ MIDDLEWARE = [
 
 TAILWIND_APP_NAME = "theme"
 INTERNAL_IPS = ["127.0.0.1"]
+
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "dashboard"
+LOGOUT_REDIRECT_URL = "login"
 
 ROOT_URLCONF = "config.urls"
 
@@ -123,3 +136,107 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Django Tailwind API",
+    "DESCRIPTION": "JWT authentication API for Django Tailwind.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": False,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+UNFOLD = {
+    "SITE_TITLE": "Django Tailwind",
+    "SITE_HEADER": "Django Tailwind",
+    "SITE_SUBHEADER": "Admin",
+    "SITE_URL": "/",
+    "SITE_SYMBOL": "bolt",
+    "SHOW_HISTORY": True,
+    "SHOW_VIEW_ON_SITE": True,
+    "BORDER_RADIUS": "8px",
+    "COLORS": {
+        "primary": {
+            "50": "#eef8f4",
+            "100": "#d5efe5",
+            "200": "#aedfcb",
+            "300": "#7ac7ac",
+            "400": "#47a989",
+            "500": "#1f6f5b",
+            "600": "#145244",
+            "700": "#124338",
+            "800": "#10362e",
+            "900": "#0e2d27",
+            "950": "#061916",
+        },
+    },
+    "SIDEBAR": {
+        "show_search": True,
+        "show_all_applications": True,
+        "navigation": [
+            {
+                "title": _("Navigation"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("Dashboard"),
+                        "icon": "dashboard",
+                        "link": reverse_lazy("admin:index"),
+                    },
+                    {
+                        "title": _("Users"),
+                        "icon": "people",
+                        "link": reverse_lazy("admin:auth_user_changelist"),
+                    },
+                    {
+                        "title": _("Groups"),
+                        "icon": "group",
+                        "link": reverse_lazy("admin:auth_group_changelist"),
+                    },
+                ],
+            },
+            {
+                "title": _("Site"),
+                "separator": True,
+                "items": [
+                    {
+                        "title": _("View website"),
+                        "icon": "public",
+                        "link": reverse_lazy("home"),
+                    },
+                    {
+                        "title": _("Dashboard"),
+                        "icon": "space_dashboard",
+                        "link": reverse_lazy("dashboard"),
+                    },
+                    {
+                        "title": _("Login page"),
+                        "icon": "login",
+                        "link": reverse_lazy("login"),
+                    },
+                    {
+                        "title": _("API docs"),
+                        "icon": "api",
+                        "link": reverse_lazy("swagger-ui"),
+                    },
+                ],
+            },
+        ],
+    },
+}
