@@ -1,0 +1,36 @@
+{% load heroicons %}
+{% if messages %}
+<div id="toast-container" class="fixed right-4 top-4 z-[100] flex w-[min(100%,24rem)] flex-col gap-3" aria-live="polite">
+  {% for message in messages %}
+    <div
+      class="toast-message flex items-start gap-3 rounded-xl border px-4 py-3 shadow-lg backdrop-blur-md transition-all duration-300
+        {% if message.tags == 'success' %}border-green-200 bg-green-50 text-green-900
+        {% elif message.tags == 'error' %}border-red-200 bg-red-50 text-red-900
+        {% elif message.tags == 'warning' %}border-amber-200 bg-amber-50 text-amber-900
+        {% else %}border-[var(--slate)] bg-white text-[var(--dusk)]{% endif %}"
+      role="alert"
+    >
+      <div class="flex-1 text-sm font-medium">{{ message }}</div>
+      <button type="button" class="toast-dismiss shrink-0 rounded p-0.5 opacity-60 hover:opacity-100" aria-label="Dismiss">
+        {% heroicon "x-mark" "h-4 w-4" %}
+      </button>
+    </div>
+  {% endfor %}
+</div>
+<script>
+  (function () {
+    var container = document.getElementById('toast-container');
+    if (!container) return;
+    container.querySelectorAll('.toast-message').forEach(function (toast) {
+      var dismiss = toast.querySelector('.toast-dismiss');
+      function close() {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(1rem)';
+        setTimeout(function () { toast.remove(); }, 300);
+      }
+      if (dismiss) dismiss.addEventListener('click', close);
+      setTimeout(close, 5000);
+    });
+  })();
+</script>
+{% endif %}

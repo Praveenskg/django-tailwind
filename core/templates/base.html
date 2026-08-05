@@ -25,7 +25,9 @@
   </head>
 
   <body class="bg-(--foam) text-(--ink) antialiased">
+    {% include "core/_messages.html" %}
     {% block content %}{% endblock %}
+    {% block footer %}{% include "core/_footer.html" %}{% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>

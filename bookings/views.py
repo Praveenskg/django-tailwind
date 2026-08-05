@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
@@ -40,6 +41,10 @@ def book_package(request, pkg_id):
         booking.user = request.user
         booking.package = package
         booking.save()
+        messages.success(
+            request,
+            f"Trip booked! {package.name} on {booking.travel_date:%b %d, %Y} for {booking.num_travelers} traveler(s).",
+        )
         return redirect("my_trips")
     return render(request, "bookings/booking_form.html", {"form": form, "package": package})
 
@@ -61,4 +66,7 @@ def cancel_booking(request, pk):
     if booking.status != Booking.Status.CANCELLED:
         booking.status = Booking.Status.CANCELLED
         booking.save(update_fields=["status"])
+        messages.success(request, f"Trip to {booking.package.destination.name} has been cancelled.")
+    else:
+        messages.info(request, "This trip was already cancelled.")
     return redirect("my_trips")

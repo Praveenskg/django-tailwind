@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
@@ -56,6 +57,7 @@ def profile_view(request):
     )
     if request.method == "POST" and form.is_valid():
         form.save()
+        messages.success(request, "Profile updated successfully.")
         return redirect("dashboard")
     return render(request, "core/profile.html", {"form": form, "profile": profile})
 
@@ -68,6 +70,7 @@ def login_view(request):
     form = AuthenticationForm(request, data=request.POST or None)
     if request.method == "POST" and form.is_valid():
         login(request, form.get_user())
+        messages.success(request, f"Welcome back, {form.get_user().get_username()}!")
         next_url = request.POST.get("next") or request.GET.get("next")
         if next_url and url_has_allowed_host_and_scheme(
             next_url,
@@ -76,6 +79,9 @@ def login_view(request):
         ):
             return redirect(next_url)
         return redirect("dashboard")
+
+    if request.method == "POST":
+        messages.error(request, "Invalid username or password.")
 
     return render(
         request,
@@ -93,6 +99,7 @@ def signup_view(request):
     if request.method == "POST" and form.is_valid():
         user = form.save()
         login(request, user)
+        messages.success(request, "Account created! Welcome to WanderBook.")
         return redirect("dashboard")
 
     return render(request, "core/signup.html", {"form": form})
@@ -101,4 +108,5 @@ def signup_view(request):
 @require_http_methods(["GET", "POST"])
 def logout_view(request):
     logout(request)
+    messages.info(request, "You have been logged out.")
     return redirect("login")

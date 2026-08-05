@@ -1,0 +1,54 @@
+{% load heroicons %}
+<footer class="border-t border-[var(--slate)] bg-[var(--dusk)] text-white">
+  <div class="mx-auto max-w-6xl px-6 py-14 sm:px-10">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="sm:col-span-2 lg:col-span-1">
+        <a href="{% url 'home' %}" class="flex items-center gap-2 font-display text-lg font-bold">
+          {% heroicon "paper-airplane" "h-5 w-5 text-[var(--sky)]" %}
+          WanderBook
+        </a>
+        <p class="mt-4 max-w-xs text-sm leading-relaxed text-white/60">
+          Discover India's most breathtaking destinations — mountains, beaches, backwaters, and beyond.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-widest text-white/50">Explore</h3>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li><a href="{% url 'destinations' %}" class="text-white/75 transition hover:text-white">Destinations</a></li>
+          <li><a href="{% url 'destinations' %}" class="text-white/75 transition hover:text-white">Tour packages</a></li>
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'my_trips' %}" class="text-white/75 transition hover:text-white">My trips</a></li>
+            <li><a href="{% url 'dashboard' %}" class="text-white/75 transition hover:text-white">Dashboard</a></li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-widest text-white/50">Account</h3>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'profile' %}" class="text-white/75 transition hover:text-white">Edit profile</a></li>
+            <li><a href="{% url 'logout' %}" class="text-white/75 transition hover:text-white">Logout</a></li>
+          {% else %}
+            <li><a href="{% url 'login' %}" class="text-white/75 transition hover:text-white">Login</a></li>
+            <li><a href="{% url 'signup' %}" class="text-white/75 transition hover:text-white">Sign up</a></li>
+          {% endif %}
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="text-sm font-semibold uppercase tracking-widest text-white/50">Developers</h3>
+        <ul class="mt-4 space-y-2.5 text-sm">
+          <li><a href="{% url 'swagger-ui' %}" class="text-white/75 transition hover:text-white">API docs</a></li>
+          <li><a href="/admin/" class="text-white/75 transition hover:text-white">Admin</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row">
+      <p class="text-sm text-white/45">&copy; {% now "Y" %} WanderBook. All rights reserved.</p>
+      <p class="text-sm text-white/45">Built with Django &amp; Tailwind CSS</p>
+    </div>
+  </div>
+</footer>
