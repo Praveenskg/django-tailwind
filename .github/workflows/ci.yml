@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Django system check
+        run: python manage.py check
+
+      - name: Apply migrations
+        run: python manage.py migrate --noinput
+
+      - name: Verify migrations are up to date
+        run: python manage.py migrate --check
+
+      - name: Build Tailwind CSS
+        run: python manage.py tailwind build
+
+      - name: Verify CSS output exists
+        run: test -s theme/static/css/dist/styles.css
+
+      - name: Run tests
+        run: python manage.py test
